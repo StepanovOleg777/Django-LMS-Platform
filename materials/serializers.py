@@ -7,14 +7,22 @@ class LessonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lesson
-        fields = '__all__'
+        fields = ['id', 'title', 'description', 'preview', 'video_link', 'course', 'created_at', 'updated_at']
         read_only_fields = ('created_at', 'updated_at')
+
+
+class LessonForCourseSerializer(serializers.ModelSerializer):
+    """Упрощенный сериализатор уроков для встраивания в курс."""
+
+    class Meta:
+        model = Lesson
+        fields = ['id', 'title', 'description', 'preview', 'video_link']
 
 
 class CourseSerializer(serializers.ModelSerializer):
     """Сериализатор для курса с уроками и их количеством."""
     lessons_count = serializers.SerializerMethodField()
-    lessons = LessonSerializer(many=True, read_only=True)  # <-- Добавляем вывод уроков
+    lessons = LessonForCourseSerializer(many=True, read_only=True)  # <-- Используем отдельный сериализатор
 
     class Meta:
         model = Course
