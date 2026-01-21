@@ -1,32 +1,137 @@
-# Добавим раздел в README.md или создадим его
-echo "# Django LMS Platform
-
-## Описание проекта
+# 📚 Django LMS Platform
 Система управления обучением (LMS) на Django с Django REST Framework.
 
-## Выполненные задания
+## 🚀 Возможности
+🔐 JWT-авторизация с регистрацией пользователей
 
-### 1. Создание проекта
-- Django проект с подключенным DRF
-- Виртуальное окружение и зависимости
+👥 Группы пользователей (модераторы, обычные пользователи)
 
-### 2. Модели данных
-- **User:** кастомная модель с email-авторизацией, телефон, город, аватар
-- **Course:** курс с названием, превью, описанием
-- **Lesson:** урок с названием, описанием, превью, ссылкой на видео
+📊 Управление курсами и уроками с изображениями
 
-### 3. CRUD операции
-- **Курсы:** реализованы через ViewSet
-- **Уроки:** реализованы через Generic классы
-- **Пользователи:** ViewSet для управления профилями
+💳 Система платежей с фильтрацией
 
-### 4. API Endpoints
-- \`/api/courses/\` - управление курсами
-- \`/api/lessons/\` - управление уроками  
-- \`/api/users/\` - управление пользователями
+🔒 Права доступа на уровне объектов
 
-### 5. Дополнительные функции
-- Русская локализация интерфейса
-- Загрузка изображений для аватарок и превью
-- Сериализаторы для всех моделей
-" > README.md
+🌍 Русская локализация интерфейса
+
+📱 REST API для всех сущностей
+
+## 🏗️ Технологии
+Python 3.10+
+
+Django 5.2
+
+Django REST Framework
+
+JWT-авторизация (Simple JWT)
+
+SQLite (для разработки)
+
+Pillow (работа с изображениями)
+
+Django Filter (фильтрация API)
+
+## ⚙️ Установка
+## 1. Клонирование и настройка
+bash
+git clone <repository-url>
+cd Django-LMS-Platform
+python -m venv venv
+
+### Активация venv
+ Windows:
+venv\Scripts\activate
+ Linux/Mac:
+source venv/bin/activate
+
+### Установка зависимостей
+pip install -r requirements.txt
+## 2. Настройка базы данных
+
+### Применение миграций
+python manage.py migrate
+
+### Создание суперпользователя
+python manage.py createsuperuser
+
+### Создание групп (модераторы)
+python manage.py create_groups
+## 3. Запуск сервера
+
+python manage.py runserver
+
+## 🔐 Аутентификация
+Регистрация пользователя
+http
+POST /api/register/
+Content-Type: application/json
+
+{
+    "email": "user@example.com",
+    "password": "password123",
+    "first_name": "Иван",
+    "last_name": "Иванов"
+}
+Получение JWT токена
+http
+POST /api/token/
+Content-Type: application/json
+
+{
+    "email": "user@example.com",
+    "password": "password123"
+}
+Ответ:
+
+json
+{
+    "refresh": "eyJ0eXAiOiJKV1QiLCJhbG...",
+    "access": "eyJ0eXAiOiJKV1QiLCJhbGc..."
+}
+Использование токена
+Добавить в заголовки:
+
+text
+Authorization: Bearer <access_token>
+
+## 🛠️ Администрирование
+### Админка
+Доступ: http://127.0.0.1:8000/admin
+
+### Управление: пользователи, группы, курсы, уроки, платежи
+
+### Создание групп
+
+python manage.py create_groups
+
+## 🔧 Разработка
+### Запуск тестов
+python manage.py test
+## Проверка кода
+
+### Проверка Django
+python manage.py check
+
+### Миграции
+python manage.py makemigrations
+python manage.py migrate
+
+### Статика
+python manage.py collectstatic
+Переменные окружения (опционально)
+Создать файл .env:
+
+env
+SECRET_KEY=your-secret-key
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+## 📄 Лицензия
+Проект создан для учебных целей
+
+## 👨‍💻 Автор
+Платформа: Django LMS
+
+Версия: 1.0
+
+Дата: 2026
