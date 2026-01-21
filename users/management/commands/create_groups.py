@@ -5,17 +5,17 @@ from materials.models import Course, Lesson
 
 
 class Command(BaseCommand):
-    help = 'Создание групп модераторов'
+    help = "Создание групп модераторов"
 
     def handle(self, *args, **kwargs):
-        moderators_group, created = Group.objects.get_or_create(name='moderators')
+        moderators_group, created = Group.objects.get_or_create(name="moderators")
 
         # Права для курсов
         course_content_type = ContentType.objects.get_for_model(Course)
         course_permissions = Permission.objects.filter(content_type=course_content_type)
 
         for perm in course_permissions:
-            if perm.codename in ['view_course', 'change_course']:
+            if perm.codename in ["view_course", "change_course"]:
                 moderators_group.permissions.add(perm)
 
         # Права для уроков
@@ -23,7 +23,7 @@ class Command(BaseCommand):
         lesson_permissions = Permission.objects.filter(content_type=lesson_content_type)
 
         for perm in lesson_permissions:
-            if perm.codename in ['view_lesson', 'change_lesson']:
+            if perm.codename in ["view_lesson", "change_lesson"]:
                 moderators_group.permissions.add(perm)
 
         if created:

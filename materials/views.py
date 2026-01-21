@@ -7,7 +7,7 @@ from users.permissions import IsModerator, IsOwner
 
 class IsNotModerator(permissions.BasePermission):
     def has_permission(self, request, view):
-        return not request.user.groups.filter(name='moderators').exists()
+        return not request.user.groups.filter(name="moderators").exists()
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -15,11 +15,11 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
 
     def get_permissions(self):
-        if self.action == 'create':
+        if self.action == "create":
             return [permissions.IsAuthenticated(), IsNotModerator()]
-        elif self.action == 'destroy':
+        elif self.action == "destroy":
             return [permissions.IsAuthenticated(), IsOwner()]
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ["update", "partial_update"]:
             return [permissions.IsAuthenticated(), IsOwner() | IsModerator()]
         else:
             return [permissions.IsAuthenticated()]
