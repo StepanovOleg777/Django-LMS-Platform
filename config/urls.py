@@ -8,21 +8,19 @@ from materials.views import CourseViewSet
 from users.views import UserViewSet, PaymentViewSet, UserRegisterAPIView
 
 router = DefaultRouter()
-router.register(r'courses', CourseViewSet)
-router.register(r'users', UserViewSet)
-router.register(r'payments', PaymentViewSet)
+router.register(r"courses", CourseViewSet)
+router.register(r"users", UserViewSet)
+router.register(r"payments", PaymentViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
-    path('api/lessons/', include('materials.urls')),
-
+    path("admin/", admin.site.urls),
+    path("api/", include(router.urls)),
+    path("api/lessons/", include("materials.urls")),
     # JWT авторизация
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     # Регистрация
-    path('api/register/', UserRegisterAPIView.as_view(), name='register'),
+    path("api/register/", UserRegisterAPIView.as_view(), name="register"),
 ]
 
 if settings.DEBUG:
