@@ -14,6 +14,17 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
 
+    def get_queryset(self):
+        """Фильтрует курсы: модераторы видят все, обычные пользователи - только свои."""
+        queryset = super().get_queryset()
+        if self.request.user.groups.filter(name="moderators").exists():
+            return queryset
+        return queryset.filter(owner=self.request.user)
+
+    def perform_create(self, serializer):
+        """Устанавливает владельца при создании курса."""
+        serializer.save(owner=self.request.user)
+
     def get_permissions(self):
         if self.action == "create":
             return [permissions.IsAuthenticated(), IsNotModerator()]
@@ -30,6 +41,13 @@ class LessonListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = LessonSerializer
     permission_classes = [permissions.IsAuthenticated, IsNotModerator]
 
+    def get_queryset(self):
+        """Фильтрует уроки: модераторы видят все, обычные пользователи - только свои."""
+        queryset = super().get_queryset()
+        if self.request.user.groups.filter(name="moderators").exists():
+            return queryset
+        return queryset.filter(owner=self.request.user)
+
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
@@ -38,6 +56,13 @@ class LessonRetrieveAPIView(generics.RetrieveAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner | IsModerator]
+
+    def get_queryset(self):
+        """Фильтрует уроки: модераторы видят все, обычные пользователи - только свои."""
+        queryset = super().get_queryset()
+        if self.request.user.groups.filter(name="moderators").exists():
+            return queryset
+        return queryset.filter(owner=self.request.user)
 
 
 class LessonUpdateAPIView(generics.UpdateAPIView):
