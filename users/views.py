@@ -13,6 +13,7 @@ User = get_user_model()
 
 class UserRegisterAPIView(generics.CreateAPIView):
     """Регистрация нового пользователя."""
+
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
     permission_classes = [permissions.AllowAny]
@@ -20,9 +21,12 @@ class UserRegisterAPIView(generics.CreateAPIView):
 
 class UserViewSet(viewsets.ModelViewSet):
     """ViewSet для управления пользователями."""
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]  # Все операции требуют авторизации
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]  # Все операции требуют авторизации
 
     def get_permissions(self):
         """ВСЕ методы требуют авторизации (регистрация через отдельный эндпоинт)."""
@@ -31,6 +35,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class PaymentViewSet(viewsets.ModelViewSet):
     """ViewSet для платежей с фильтрацией."""
+
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     permission_classes = [permissions.IsAuthenticated]
