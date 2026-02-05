@@ -28,13 +28,13 @@ def create_stripe_price(course, product_id):
     """
     # Предполагаем, что курс имеет поле price или используем фиксированную цену
     # Если у курса нет цены, используем 1000 рублей (100000 копеек)
-    amount = getattr(course, 'price', 1000) * 100  # переводим в копейки
+    amount = getattr(course, "price", 1000) * 100  # переводим в копейки
 
     try:
         price = stripe.Price.create(
             product=product_id,
             unit_amount=amount,  # в копейках
-            currency='rub',  # рубли
+            currency="rub",  # рубли
         )
         return price.id
     except stripe.error.StripeError as e:
@@ -48,23 +48,25 @@ def create_stripe_session(price_id, course_id, user_email):
     """
     try:
         session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[{
-                'price': price_id,
-                'quantity': 1,
-            }],
-            mode='payment',
-            success_url=f'{settings.DOMAIN}/api/payments/success/?course_id={course_id}',
-            cancel_url=f'{settings.DOMAIN}/api/payments/cancel/',
+            payment_method_types=["card"],
+            line_items=[
+                {
+                    "price": price_id,
+                    "quantity": 1,
+                }
+            ],
+            mode="payment",
+            success_url=f"{settings.DOMAIN}/api/payments/success/?course_id={course_id}",
+            cancel_url=f"{settings.DOMAIN}/api/payments/cancel/",
             customer_email=user_email,
             metadata={
-                'course_id': str(course_id),
-            }
+                "course_id": str(course_id),
+            },
         )
         return {
-            'session_id': session.id,
-            'url': session.url,
-            'payment_status': session.payment_status,
+            "session_id": session.id,
+            "url": session.url,
+            "payment_status": session.payment_status,
         }
     except stripe.error.StripeError as e:
         print(f"Ошибка создания сессии в Stripe: {e}")
