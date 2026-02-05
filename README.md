@@ -1,18 +1,137 @@
-# LMS Platform
+# 📚 Django LMS Platform
+Система управления обучением (LMS) на Django с Django REST Framework.
 
-Проект системы управления обучением (LMS) на Django с Django REST Framework.
+## 🚀 Возможности
+🔐 JWT-авторизация с регистрацией пользователей
 
-## Функциональность
+👥 Группы пользователей (модераторы, обычные пользователи)
 
-- Кастомная модель пользователя с email-авторизацией
-- Управление курсами и уроками
-- REST API для всех сущностей
-- Загрузка изображений для превью
+📊 Управление курсами и уроками с изображениями
 
-## Установка
+💳 Система платежей с фильтрацией
 
-1. Клонировать репозиторий:
-```
+🔒 Права доступа на уровне объектов
+
+🌍 Русская локализация интерфейса
+
+📱 REST API для всех сущностей
+
+## 🏗️ Технологии
+Python 3.10+
+
+Django 5.2
+
+Django REST Framework
+
+JWT-авторизация (Simple JWT)
+
+SQLite (для разработки)
+
+Pillow (работа с изображениями)
+
+Django Filter (фильтрация API)
+
+## ⚙️ Установка
+## 1. Клонирование и настройка
+bash
 git clone <repository-url>
-cd LMS_Platform
-```
+cd Django-LMS-Platform
+python -m venv venv
+
+### Активация venv
+ Windows:
+venv\Scripts\activate
+ Linux/Mac:
+source venv/bin/activate
+
+### Установка зависимостей
+pip install -r requirements.txt
+## 2. Настройка базы данных
+
+### Применение миграций
+python manage.py migrate
+
+### Создание суперпользователя
+python manage.py createsuperuser
+
+### Создание групп (модераторы)
+python manage.py create_groups
+## 3. Запуск сервера
+
+python manage.py runserver
+
+## 🔐 Аутентификация
+Регистрация пользователя
+http
+POST /api/register/
+Content-Type: application/json
+
+{
+    "email": "user@example.com",
+    "password": "password123",
+    "first_name": "Иван",
+    "last_name": "Иванов"
+}
+Получение JWT токена
+http
+POST /api/token/
+Content-Type: application/json
+
+{
+    "email": "user@example.com",
+    "password": "password123"
+}
+Ответ:
+
+json
+{
+    "refresh": "eyJ0eXAiOiJKV1QiLCJhbG...",
+    "access": "eyJ0eXAiOiJKV1QiLCJhbGc..."
+}
+Использование токена
+Добавить в заголовки:
+
+text
+Authorization: Bearer <access_token>
+
+## 🛠️ Администрирование
+### Админка
+Доступ: http://127.0.0.1:8000/admin
+
+### Управление: пользователи, группы, курсы, уроки, платежи
+
+### Создание групп
+
+python manage.py create_groups
+
+## 🔧 Разработка
+### Запуск тестов
+python manage.py test
+## Проверка кода
+
+### Проверка Django
+python manage.py check
+
+### Миграции
+python manage.py makemigrations
+python manage.py migrate
+
+### Статика
+python manage.py collectstatic
+Переменные окружения (опционально)
+Создать файл .env:
+
+env
+SECRET_KEY=your-secret-key
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+## 📄 Лицензия
+Проект создан для учебных целей
+
+## 👨‍💻 Автор
+Платформа: Django LMS
+
+Версия: 1.0
+
+Дата: 2026
