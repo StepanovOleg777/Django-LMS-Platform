@@ -1,20 +1,13 @@
-# Virtual Environment
-venv/
-env/
-ENV/
-.venv/
-
-# PyCharm
-.idea/
-*.iml
-
-# VSCode
-.vscode/
+﻿# Environment variables
+.env
+.env.local
+*.env
+!.env.example
 
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
+*.class
 *.so
 .Python
 build/
@@ -38,6 +31,19 @@ wheels/
 local_settings.py
 db.sqlite3
 media/
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# PyCharm
+.idea/
+*.iml
+
+# VSCode
+.vscode/
 
 # OS
 Thumbs.db

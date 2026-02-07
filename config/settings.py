@@ -1,14 +1,18 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
+
+# Загрузка переменных окружения
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-your-secret-key-change-this-in-production"
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-fallback-key")
 
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
@@ -66,11 +70,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "lms_db",
-        "USER": "lms_user",
-        "PASSWORD": "lms_password",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "NAME": os.getenv("DB_NAME", "lms_db"),
+        "USER": os.getenv("DB_USER", "postgres"),
+        "PASSWORD": os.getenv("DB_PASSWORD", ""),
+        "HOST": os.getenv("DB_HOST", "localhost"),
+        "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
 
@@ -126,20 +130,24 @@ SIMPLE_JWT = {
 }
 
 # Stripe settings - тестовые ключи
-STRIPE_PUBLISHABLE_KEY = "pk_test_51Sx8yTJguzpQiwCd11A5svPmywFAEW3rLaVruzm5TlIKIfDkGhVSrIil4F8dBOSuHw6ysRouMN5nTjopb8hBkYtS008PNPypTQ"
-STRIPE_SECRET_KEY = ""
-STRIPE_WEBHOOK_SECRET = "whsec_test_1234567890"
+STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 
 # Domain for payment links
-DOMAIN = "http://127.0.0.1:8000"
+DOMAIN = os.getenv("DOMAIN", "http://127.0.0.1:8000")
 
 # Redis settings
-REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
-REDIS_PORT = os.environ.get("REDIS_PORT", "6379")
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_PORT = os.getenv("REDIS_PORT", "6379")
 
 # Celery settings
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_BROKER_URL = os.getenv(
+    "CELERY_BROKER_URL", f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+)
+CELERY_RESULT_BACKEND = os.getenv(
+    "CELERY_RESULT_BACKEND", f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+)
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
@@ -149,9 +157,11 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 
 # Email settings (для теста в консоль)
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = os.getenv(
+    "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
+)
 EMAIL_HOST = "localhost"
 EMAIL_PORT = 25
 EMAIL_USE_TLS = False
 
-DEFAULT_FROM_EMAIL = "noreply@lms.local"
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "noreply@lms.local")
