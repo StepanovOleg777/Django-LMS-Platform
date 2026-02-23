@@ -126,6 +126,29 @@ SECRET_KEY=your-secret-key
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 
+## 🚀 Деплой
+
+### Автоматический деплой через GitHub Actions
+
+При каждом пуше в ветку `feature/work_1`:
+1. Автоматически запускаются тесты
+2. После успешных тестов код деплоится на сервер
+3. Обновляются зависимости
+4. Применяются миграции
+5. Перезапускаются Gunicorn и Celery
+
+### Ручной деплой
+ssh stepanov@89.169.133.198
+cd /home/stepanov/Django-LMS-Platform
+git pull origin feature/work_1
+source venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py collectstatic --no-input
+sudo systemctl restart gunicorn
+sudo systemctl restart celery
+sudo systemctl restart celery-beat
+
 ## 📄 Лицензия
 Проект создан для учебных целей
 
