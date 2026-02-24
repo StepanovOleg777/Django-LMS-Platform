@@ -1,8 +1,10 @@
-name: Deploy to Server
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ feature/work_1 ]
+    branches: [ feature/work_1, main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   test:
@@ -14,7 +16,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: github_actions
+          POSTGRES_DB: test_db
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -35,25 +37,48 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip install flake8
+
+    - name: Lint with flake8
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
     - name: Run tests
       env:
-        DB_NAME: github_actions
+        DB_NAME: test_db
         DB_USER: postgres
         DB_PASSWORD: postgres
         DB_HOST: localhost
         DB_PORT: 5432
-        SECRET_KEY: test-key-not-secure
+        SECRET_KEY: test-key
         DEBUG: False
       run: |
         python manage.py test
 
-  deploy:
+  build:
     needs: test
     runs-on: ubuntu-latest
     if: success()
 
     steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build Docker images
+      run: |
+        docker-compose -f docker-compose.yaml build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/feature/work_1' && success()
+
+    steps:
+    - uses: actions/checkout@v3
+
     - name: Deploy to Server
       uses: appleboy/ssh-action@v0.1.5
       with:
@@ -63,11 +88,16 @@ jobs:
         script: |
           cd /home/stepanov/Django-LMS-Platform
           git pull origin feature/work_1
-          source venv/bin/activate
-          pip install -r requirements.txt
-          python manage.py migrate
-          python manage.py collectstatic --no-input
-          sudo systemctl restart gunicorn
-          sudo systemctl restart celery
-          sudo systemctl restart celery-beat
-          echo "Deploy completed!"
+          
+          # Копируем .env файл (он должен быть на сервере!)
+          cp /home/stepanov/.env .env
+          
+          # Собираем и запускаем контейнеры
+          docker-compose down
+          docker-compose build
+          docker-compose up -d
+          
+          # Очищаем старые образы
+          docker system prune -f
+          
+          echo "Deployment completed!"

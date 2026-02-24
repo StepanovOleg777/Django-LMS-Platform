@@ -149,6 +149,91 @@ sudo systemctl restart gunicorn
 sudo systemctl restart celery
 sudo systemctl restart celery-beat
 
+
+## 🐳 Запуск через Docker
+
+### Предварительные требования
+- Установленные Docker и Docker Compose
+
+## Запуск
+
+### Клонируй репозиторий
+git clone https://github.com/StepanovOleg777/Django-LMS-Platform.git
+cd Django-LMS-Platform
+
+### Создай .env файл (скопируй из .env.example)
+cp .env.example .env
+
+### Отредактируй .env, укажи свои данные
+
+### Запусти контейнеры
+docker-compose up -d --build
+
+### Приложение доступно по адресу: http://localhost
+
+## Полезные команды
+
+### Просмотр логов
+docker-compose logs -f
+
+### Просмотр запущенных контейнеров
+docker-compose ps
+
+### Перезапуск контейнеров
+docker-compose restart
+
+## 🔄 CI/CD Pipeline
+Проект использует GitHub Actions для автоматического тестирования и деплоя.
+
+### Что происходит при каждом пуше в ветку feature/work_1:
+✅ Запускаются тесты
+
+✅ Проверяется стиль кода (flake8)
+
+✅ Собираются Docker образы
+
+🚀 Автоматический деплой на сервер 89.169.133.198
+
+### Настроенные GitHub Secrets:
+SERVER_HOST - IP сервера
+
+SERVER_USER - пользователь для SSH
+
+SSH_PRIVATE_KEY - приватный ключ для подключения
+
+## 🌐 Деплой на сервер
+### Автоматический деплой
+Достаточно запушить изменения в ветку feature/work_1 - GitHub Actions сделает всё автоматически.
+
+### Ручной деплой (если нужно)
+ssh stepanov@89.169.133.198
+cd /home/stepanov/Django-LMS-Platform
+git pull origin feature/work_1
+source venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py collectstatic --no-input
+sudo systemctl restart gunicorn
+sudo systemctl restart celery
+sudo systemctl restart celery-beat
+
+# 📊 Проверка работы
+### Локально
+Главная: http://localhost
+
+Админка: http://localhost/admin
+
+Swagger: http://localhost/swagger
+
+API курсов: http://localhost/api/courses/
+
+### На сервере
+Главная: http://89.169.133.198
+
+Админка: http://89.169.133.198/admin
+
+Swagger: http://89.169.133.198/swagger
+
 ## 📄 Лицензия
 Проект создан для учебных целей
 
